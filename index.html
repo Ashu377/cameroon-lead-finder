@@ -179,7 +179,7 @@
         finance: ['["amenity"~"bank|atm|money_transfer"]','["office"~"financial|insurance"]'],
         services: ['["office"]','["craft"]','["amenity"~"post_office|fuel|car_repair"]']
       };
-      const endpoints = ['https://overpass-api.de/api/interpreter','https://overpass.private.coffee/api/interpreter'];
+      const endpoints = ['https://maps.mail.ru/osm/tools/overpass/api/interpreter','https://overpass.private.coffee/api/interpreter','https://overpass-api.de/api/interpreter'];
       const $ = (id) => document.getElementById(id);
       const citySelect = $('city'), categorySelect = $('category'), radiusSelect = $('radius');
       const listArea = $('listArea'), searchBtn = $('searchBtn'), filterInput = $('filterInput');
@@ -215,9 +215,10 @@
         return `[out:json][timeout:25];\n(\n${blocks}\n);\nout center tags 60;`;
       }
       async function queryEndpoint(url,query){
-        const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),18000);
+        const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),22000);
         try {
-          const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:new URLSearchParams({data:query}),signal:controller.signal});
+          const requestUrl=url+'?'+new URLSearchParams({data:query});
+          const response=await fetch(requestUrl,{method:'GET',mode:'cors',referrerPolicy:'origin',cache:'no-store',signal:controller.signal});
           if(!response.ok) throw new Error(`Public map service returned ${response.status}`);
           const data=await response.json(); if(!Array.isArray(data.elements)) throw new Error('Unexpected search response'); return data.elements;
         } finally { clearTimeout(timer); }
