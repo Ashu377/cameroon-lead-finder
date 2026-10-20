@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#132d28">
+  <meta name="description" content="Find public business listings across Cameroon. Search by city and category, save prospects, and export your lead list.">
+  <title>LeadLink CM — Cameroon Business Finder</title>
+  <style>
+    :root {
+      --ink: #172a25; --muted: #74817b; --forest: #143c33; --forest-2: #20584a;
+      --gold: #efb957; --gold-light: #fff2d6; --paper: #fbfaf6; --white: #fff;
+      --line: #e8e9e2; --green-soft: #edf5ef; --red: #b84d42; --shadow: 0 14px 40px rgba(22,45,38,.07);
+      --radius: 18px; --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--sans); line-height: 1.5; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+    .shell { min-height: 100vh; }
+    .topbar { background: var(--forest); color: #edf4ef; }
+    .topbar-inner { max-width: 1380px; margin: auto; min-height: 76px; padding: 0 34px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-mark { width: 43px; height: 43px; border-radius: 14px; display: grid; place-items: center; color: var(--forest); background: var(--gold); font-weight: 950; font-size: 1.08rem; letter-spacing: -.08em; box-shadow: inset 0 0 0 4px rgba(255,255,255,.18); }
+    .brand-name { display: block; font-size: 1.02rem; font-weight: 850; letter-spacing: .025em; }
+    .brand-tag { display: block; color: #bcd1c4; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; margin-top: 2px; }
+    .top-meta { display: flex; align-items: center; gap: 12px; color: #d9e8dc; font-size: .82rem; }
+    .live-dot { width: 8px; height: 8px; display: inline-block; margin-right: 7px; border-radius: 50%; background: #7ee0a1; box-shadow: 0 0 0 4px rgba(126,224,161,.13); }
+    .country-pill { border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 8px 13px; font-size: .72rem; font-weight: 750; letter-spacing: .1em; }
+    .main { max-width: 1380px; margin: auto; padding: 38px 34px 58px; }
+    .intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; margin-bottom: 28px; }
+    .eyebrow { display: flex; align-items: center; gap: 9px; color: var(--forest-2); font-size: .72rem; font-weight: 850; letter-spacing: .16em; text-transform: uppercase; }
+    .eyebrow::before { content: ''; width: 25px; height: 2px; background: var(--gold); }
+    h1 { max-width: 680px; margin: 11px 0 10px; color: var(--forest); font-size: clamp(2.05rem, 4vw, 3.45rem); line-height: 1.04; letter-spacing: -.055em; }
+    .intro p { max-width: 620px; margin: 0; color: var(--muted); font-size: 1rem; }
+    .privacy-note { max-width: 280px; padding: 13px 15px; border: 1px solid #e6e8df; border-radius: 14px; color: #64736b; background: rgba(255,255,255,.67); font-size: .75rem; }
+    .privacy-note strong { display: block; color: var(--forest); font-size: .78rem; margin-bottom: 2px; }
+    .layout { display: grid; grid-template-columns: 306px minmax(0,1fr); align-items: start; gap: 22px; }
+    .panel { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .filters { position: sticky; top: 16px; padding: 22px; }
+    .panel-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 6px; color: var(--forest); font-size: 1.08rem; font-weight: 850; }
+    .panel-sub { margin: 0 0 20px; color: var(--muted); font-size: .82rem; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; margin-bottom: 7px; color: #45544e; font-size: .76rem; font-weight: 800; }
+    .field select, .field input { width: 100%; min-height: 45px; padding: 10px 12px; border: 1px solid #dfe4dc; border-radius: 11px; outline: none; color: var(--ink); background: #fff; font-size: .88rem; }
+    .field select:focus, .field input:focus { border-color: var(--forest-2); box-shadow: 0 0 0 3px rgba(32,88,74,.11); }
+    .field-hint { margin: 6px 0 0; color: #8a948d; font-size: .69rem; }
+    .primary-btn { width: 100%; min-height: 49px; border: 0; border-radius: 12px; color: var(--forest); background: var(--gold); font-weight: 850; box-shadow: 0 8px 18px rgba(239,185,87,.24); transition: transform .16s, background .16s; }
+    .primary-btn:hover { transform: translateY(-1px); background: #f3c66f; }
+    .primary-btn:disabled { cursor: wait; opacity: .72; transform: none; }
+    .secondary-btn { min-height: 38px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: #53645b; font-size: .78rem; font-weight: 750; }
+    .secondary-btn:hover { border-color: #bfcfc1; background: #f7faf6; }
+    .mini-privacy { margin: 17px 0 0; padding-top: 14px; border-top: 1px solid var(--line); color: #89938d; font-size: .7rem; }
+    .results-area { min-width: 0; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    .stat { min-height: 78px; padding: 15px 17px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+    .stat-label { color: var(--muted); font-size: .7rem; font-weight: 760; letter-spacing: .07em; text-transform: uppercase; }
+    .stat-value { display: block; color: var(--forest); font-size: 1.37rem; font-weight: 900; line-height: 1.2; margin-top: 5px; }
+    .result-panel { overflow: hidden; }
+    .result-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 17px 20px; border-bottom: 1px solid var(--line); }
+    .tabs { display: flex; gap: 6px; padding: 4px; border-radius: 11px; background: #f1f4ef; }
+    .tab { min-height: 34px; padding: 0 13px; border: 0; border-radius: 8px; color: #728078; background: transparent; font-size: .79rem; font-weight: 800; }
+    .tab.active { color: var(--forest); background: white; box-shadow: 0 2px 7px rgba(20,60,51,.08); }
+    .toolbar-actions { display: flex; align-items: center; gap: 9px; }
+    .keyword { width: min(220px, 25vw); min-height: 38px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 10px; outline: none; font-size: .78rem; }
+    .keyword:focus { border-color: var(--forest-2); }
+    .source-strip { display: flex; align-items: center; gap: 7px; padding: 9px 20px; color: #77847d; background: #f8faf7; border-bottom: 1px solid var(--line); font-size: .7rem; }
+    .source-strip strong { color: var(--forest-2); }
+    .source-icon { width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; color: #fff; background: #6b9b62; font-size: .65rem; font-weight: 900; }
+    .lead-list { padding: 0 18px; }
+    .lead-card { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 15px; padding: 18px 3px; border-bottom: 1px solid #eef0eb; }
+    .lead-card:last-child { border-bottom: 0; }
+    .lead-name-row { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+    .lead-name { margin: 0; color: var(--forest); font-size: .99rem; font-weight: 850; overflow-wrap: anywhere; }
+    .category-chip { padding: 3px 8px; border: 1px solid #e6ece4; border-radius: 999px; color: #587064; background: #f4f8f3; font-size: .65rem; font-weight: 750; }
+    .lead-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 13px; margin-top: 7px; color: var(--muted); font-size: .74rem; }
+    .lead-contact { display: flex; flex-wrap: wrap; gap: 7px 15px; margin-top: 10px; }
+    .lead-contact a { color: #296350; text-decoration: none; font-size: .76rem; font-weight: 730; overflow-wrap: anywhere; }
+    .lead-contact a:hover { text-decoration: underline; }
+    .lead-contact .missing { color: #a1aaa4; font-size: .75rem; }
+    .lead-actions { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 9px; }
+    .save-btn { min-width: 98px; min-height: 36px; padding: 0 11px; border: 1px solid #cdd9d0; border-radius: 10px; color: var(--forest); background: white; font-size: .76rem; font-weight: 800; }
+    .save-btn:hover, .save-btn.saved { border-color: var(--forest); color: #fff; background: var(--forest); }
+    .map-link { color: #8a948d; font-size: .7rem; text-decoration: none; }
+    .map-link:hover { color: var(--green); text-decoration: underline; }
+    .saved-tools { display: flex; align-items: center; gap: 8px; }
+    .saved-edit { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .saved-edit select, .saved-edit input { min-height: 34px; padding: 6px 9px; border: 1px solid #e1e5de; border-radius: 8px; color: #4e5c55; background: #fff; font-size: .72rem; }
+    .saved-edit input { min-width: 180px; flex: 1; }
+    .remove-btn { border: 0; color: var(--red); background: transparent; font-size: .73rem; font-weight: 750; }
+    .empty, .loading, .error-box { min-height: 310px; padding: 52px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .empty-icon { width: 58px; height: 58px; margin-bottom: 15px; display: grid; place-items: center; border-radius: 18px; color: var(--forest); background: var(--gold-light); font-size: 1.55rem; }
+    .empty h3 { margin: 0 0 7px; color: var(--forest); font-size: 1.04rem; }
+    .empty p, .error-box p { max-width: 430px; margin: 0; color: var(--muted); font-size: .85rem; }
+    .empty .secondary-btn { margin-top: 16px; }
+    .error-box { color: var(--red); }
+    .error-box .empty-icon { color: var(--red); background: #fff0ed; }
+    .spinner { width: 30px; height: 30px; margin-bottom: 15px; border: 3px solid #e6eee6; border-top-color: var(--forest-2); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .results-foot { display: flex; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 1px solid var(--line); color: #89928d; font-size: .68rem; }
+    .footer { max-width: 1380px; margin: auto; padding: 0 34px 26px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; color: #8a948d; font-size: .7rem; }
+    .footer a { color: #537163; }
+    @media (max-width: 980px) { .layout { grid-template-columns: 270px minmax(0,1fr); gap: 15px; } .main { padding-left: 20px; padding-right: 20px; } .topbar-inner { padding: 0 20px; } .footer { padding-left: 20px; padding-right: 20px; } .stats { gap: 8px; } .stat { padding: 13px; } }
+    @media (max-width: 760px) { .intro { align-items: flex-start; flex-direction: column; } .privacy-note { max-width: none; } .layout { grid-template-columns: 1fr; } .filters { position: static; } .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 13px; } .filters .panel-title, .filters .panel-sub { grid-column: 1/-1; } .primary-btn { grid-column: 1/-1; } .mini-privacy { grid-column: 1/-1; } .top-meta span:first-child { display: none; } }
+    @media (max-width: 540px) { .topbar-inner { min-height: 66px; padding: 0 15px; } .brand-mark { width: 38px; height: 38px; } .brand-name { font-size: .92rem; } .country-pill { padding: 7px 9px; font-size: .65rem; } .main { padding: 26px 14px 40px; } h1 { font-size: 2.45rem; } .filter-grid { grid-template-columns: 1fr; } .filters { padding: 18px; } .stats { grid-template-columns: repeat(3, 1fr); } .stat { min-height: 69px; padding: 10px; } .stat-label { font-size: .59rem; } .stat-value { font-size: 1.16rem; } .result-toolbar { align-items: flex-start; flex-direction: column; padding: 13px; } .toolbar-actions { width: 100%; } .keyword { flex: 1; width: 50%; } .lead-list { padding: 0 12px; } .lead-card { grid-template-columns: 1fr; gap: 11px; padding: 15px 2px; } .lead-actions { flex-direction: row; align-items: center; } .save-btn { min-width: 0; } .results-foot { flex-direction: column; padding: 12px 14px; } .footer { padding: 0 14px 20px; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#" aria-label="LeadLink CM home">
+          <span class="brand-mark" aria-hidden="true">LL</span>
+          <span><span class="brand-name">LeadLink CM</span><span class="brand-tag">Cameroon business finder</span></span>
+        </a>
+        <div class="top-meta"><span><i class="live-dot"></i>Public business listings</span><span class="country-pill">🇨🇲 CAMEROON</span></div>
+      </div>
+    </header>
+    <main class="main">
+      <section class="intro">
+        <div>
+          <div class="eyebrow">Local business discovery</div>
+          <h1>Find your next <span style="color:#b2781e">connection.</span></h1>
+          <p>Explore public business listings by city and category. Save prospects, keep notes, and export a follow-up list when you’re ready.</p>
+        </div>
+        <aside class="privacy-note"><strong>Your saved leads stay on this device</strong>Searches use OpenStreetMap public records. The app does not upload your saved list to a server.</aside>
+      </section>
+      <section class="layout" aria-label="Lead finder">
+        <aside class="panel filters">
+          <h2 class="panel-title">Build a search <span aria-hidden="true">⌕</span></h2>
+          <p class="panel-sub">Choose an area and the kind of business you’re looking for.</p>
+          <div class="filter-grid">
+            <div class="field"><label for="city">City or town</label><select id="city"><option value="">Choose a place</option></select></div>
+            <div class="field"><label for="category">Business category</label><select id="category"></select></div>
+            <div class="field"><label for="radius">Search radius</label><select id="radius"><option value="2000">2 km</option><option value="5000" selected>5 km</option><option value="10000">10 km</option></select><p class="field-hint">Larger areas may take longer to search.</p></div>
+            <div class="field"><label for="keywordInput">Name contains <span style="font-weight:500;color:#87928b">(optional)</span></label><input id="keywordInput" placeholder="e.g. bakery, hotel" autocomplete="off"><p class="field-hint">Filters returned records by name or category.</p></div>
+            <button id="searchBtn" class="primary-btn" type="button">Search public listings <span aria-hidden="true">→</span></button>
+          </div>
+          <p class="mini-privacy">Only public business/place records are searched. Coverage depends on what’s mapped locally; missing phone numbers or websites won’t be invented.</p>
+        </aside>
+        <section class="results-area">
+          <div class="stats" aria-label="Lead list summary">
+            <div class="stat"><span class="stat-label">Found</span><strong id="foundCount" class="stat-value">0</strong></div>
+            <div class="stat"><span class="stat-label">Saved leads</span><strong id="savedCount" class="stat-value">0</strong></div>
+            <div class="stat"><span class="stat-label">Area</span><strong id="areaStat" class="stat-value" style="font-size:1rem">—</strong></div>
+          </div>
+          <div class="panel result-panel">
+            <div class="result-toolbar">
+              <div class="tabs" role="tablist" aria-label="Lead views"><button class="tab active" id="tabResults" role="tab" aria-selected="true">Search results</button><button class="tab" id="tabSaved" role="tab" aria-selected="false">Saved leads</button></div>
+              <div class="toolbar-actions"><input class="keyword" id="filterInput" placeholder="Filter this list…" aria-label="Filter visible list"><button class="secondary-btn" id="exportBtn" type="button">Export CSV</button></div>
+            </div>
+            <div class="source-strip"><span class="source-icon" aria-hidden="true">O</span><span>Data source: <strong>OpenStreetMap contributors</strong></span><span>·</span><span>Public listings, not endorsements</span></div>
+            <div id="listArea" class="lead-list" aria-live="polite"><div class="empty"><div class="empty-icon" aria-hidden="true">⌕</div><h3>Start with a city and category</h3><p>Search mapped businesses across Cameroon. Results may vary by area, and contact details are shown only when publicly listed.</p></div></div>
+            <div class="results-foot"><span id="footLeft">Search results will appear here</span><span>Use public business contacts responsibly and follow local privacy and marketing rules.</span></div>
+          </div>
+        </section>
+      </section>
+    </main>
+    <footer class="footer"><span>LeadLink CM · Cameroon-first prospect research</span><span>Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a></span></footer>
+  </div>
+  <script>
+    (() => {
+      'use strict';
+      const STORE_KEY = 'leadlink_cm_saved_v1';
+      const cities = [
+        ['Buea',4.155,9.266],['Douala',4.0511,9.7679],['Yaoundé',3.848,11.5021],['Limbe',4.0243,9.2149],['Kumba',4.6363,9.4469],['Bamenda',5.9597,10.1453],['Bafoussam',5.4781,10.4175],['Garoua',9.3014,13.3977],['Maroua',10.5909,14.3159],['Ngaoundéré',7.3223,13.5847],['Ebolowa',2.9,11.15],['Kribi',2.9391,9.9075],['Bertoua',4.575,13.6846],['Dschang',5.45,10.067],['Foumban',5.726,10.898],['Edéa',3.8,10.133],['Bafang',5.15,10.183],['Nkongsamba',4.95,9.933],['Tiko',4.075,9.367],['Mbalmayo',3.517,11.5]
+      ];
+      const categories = [
+        ['all','All businesses'],['retail','Shops & retail'],['food','Restaurants & cafés'],['stay','Hotels & guesthouses'],['health','Health & pharmacies'],['education','Schools & training'],['finance','Banks & finance'],['services','Offices & services']
+      ];
+      const querySets = {
+        all: ['["shop"]','["office"]','["craft"]','["amenity"~"restaurant|cafe|fast_food|food_court|bar|pub|marketplace|bank|atm|pharmacy|clinic|hospital|doctors|dentist|school|college|university|kindergarten|fuel|post_office"]','["tourism"~"hotel|guest_house|hostel|motel"]'],
+        retail: ['["shop"]'],
+        food: ['["amenity"~"restaurant|cafe|fast_food|food_court|bar|pub|marketplace"]'],
+        stay: ['["tourism"~"hotel|guest_house|hostel|motel"]'],
+        health: ['["amenity"~"pharmacy|clinic|hospital|doctors|dentist|health_post"]'],
+        education: ['["amenity"~"school|college|university|kindergarten|training"]'],
+        finance: ['["amenity"~"bank|atm|money_transfer"]','["office"~"financial|insurance"]'],
+        services: ['["office"]','["craft"]','["amenity"~"post_office|fuel|car_repair"]']
+      };
+      const endpoints = ['https://overpass-api.de/api/interpreter','https://overpass.private.coffee/api/interpreter'];
+      const $ = (id) => document.getElementById(id);
+      const citySelect = $('city'), categorySelect = $('category'), radiusSelect = $('radius');
+      const listArea = $('listArea'), searchBtn = $('searchBtn'), filterInput = $('filterInput');
+      let currentResults = [], savedLeads = readSaved(), activeTab = 'results', lastArea = '—';
+      cities.forEach(([name]) => { const o=document.createElement('option'); o.value=name; o.textContent=name; citySelect.appendChild(o); });
+      categories.forEach(([value,label]) => { const o=document.createElement('option'); o.value=value; o.textContent=label; categorySelect.appendChild(o); });
+      categorySelect.value='all';
+      updateCounts();
+      function readSaved(){ try { const v=JSON.parse(localStorage.getItem(STORE_KEY)||'[]'); return Array.isArray(v)?v:[]; } catch { return []; } }
+      function persist(){ localStorage.setItem(STORE_KEY,JSON.stringify(savedLeads)); updateCounts(); }
+      function updateCounts(){ $('foundCount').textContent=String(currentResults.length); $('savedCount').textContent=String(savedLeads.length); $('areaStat').textContent=lastArea; }
+      function clean(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+      function safeUrl(v){ if(!v) return ''; let s=String(v).trim(); if(!/^https?:\/\//i.test(s)) s='https://'+s; try { const u=new URL(s); return ['http:','https:'].includes(u.protocol)?u.href:''; } catch { return ''; } }
+      function phoneOf(t){ return t['contact:phone']||t.phone||t['contact:mobile']||t.mobile||''; }
+      function emailOf(t){ return t['contact:email']||t.email||''; }
+      function webOf(t){ return t['contact:website']||t.website||t.url||''; }
+      function categoryOf(t){
+        const v=t.shop||t.amenity||t.tourism||t.office||t.craft||'Business';
+        const map={supermarket:'Supermarket',convenience:'Convenience shop',clothes:'Clothing',chemist:'Pharmacy',pharmacy:'Pharmacy',restaurant:'Restaurant',cafe:'Café',fast_food:'Fast food',hotel:'Hotel',guest_house:'Guesthouse',school:'School',college:'College',university:'University',bank:'Bank',clinic:'Clinic',doctors:'Medical practice',beauty:'Beauty & care',hairdresser:'Hair salon',mobile_phone:'Mobile phones',bakery:'Bakery',car_repair:'Auto repair',fuel:'Fuel station',books:'Bookshop',hardware:'Hardware',electronics:'Electronics',lawyer:'Legal services',accountant:'Accounting',insurance:'Insurance',financial:'Finance'};
+        return map[v]||v.replaceAll('_',' ').replace(/\b\w/g,x=>x.toUpperCase());
+      }
+      function addressOf(t,city){
+        const house=t['addr:housenumber']||''; const street=t['addr:street']||t['addr:place']||''; const suburb=t['addr:suburb']||t['addr:neighbourhood']||''; const parts=[];
+        if(house&&street) parts.push(house+' '+street); else if(street) parts.push(street); if(suburb&&suburb!==street) parts.push(suburb); const town=t['addr:city']||t['addr:town']||city; if(town) parts.push(town); return parts.join(', ')||city+', Cameroon';
+      }
+      function toLead(e,city){
+        const t=e.tags||{}; const loc=e.type==='node'?{lat:e.lat,lon:e.lon}:e.center||{}; const name=t.name||t['name:en']||'Unnamed listing';
+        return {id:`${e.type}/${e.id}`,name,category:categoryOf(t),address:addressOf(t,city),city,phone:phoneOf(t),email:emailOf(t),website:webOf(t),lat:loc.lat,lon:loc.lon,source:`https://www.openstreetmap.org/${e.type}/${e.id}`,updated:new Date().toISOString()};
+      }
+      function buildQuery(lat,lon,radius,category){
+        const selectors=querySets[category]||querySets.all;
+        const blocks=selectors.map(sel=>`nwr(around:${radius},${lat},${lon})["name"]${sel};`).join('\n');
+        return `[out:json][timeout:25];\n(\n${blocks}\n);\nout center tags 60;`;
+      }
+      async function queryEndpoint(url,query){
+        const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),18000);
+        try {
+          const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:new URLSearchParams({data:query}),signal:controller.signal});
+          if(!response.ok) throw new Error(`Public map service returned ${response.status}`);
+          const data=await response.json(); if(!Array.isArray(data.elements)) throw new Error('Unexpected search response'); return data.elements;
+        } finally { clearTimeout(timer); }
+      }
+      async function search(){
+        const choice=cities.find(c=>c[0]===citySelect.value); if(!choice){ citySelect.focus(); showError('Choose a Cameroon city or town first.'); return; }
+        const [city,lat,lon]=choice; const radius=Number(radiusSelect.value); const cat=categorySelect.value; const q=buildQuery(lat,lon,radius,cat);
+        currentResults=[]; lastArea=city; updateCounts(); $('areaStat').textContent=city; activeTab='results'; setTabs(); searchBtn.disabled=true; searchBtn.textContent='Searching public listings…'; $('footLeft').textContent='Querying public map data…';
+        listArea.innerHTML='<div class="loading"><div class="spinner" aria-hidden="true"></div><h3>Searching around '+clean(city)+'</h3><p>Checking public map records. This can take a little while in busy areas.</p></div>';
+        let error=null, elements=null;
+        for(const endpoint of endpoints){ try { elements=await queryEndpoint(endpoint,q); break; } catch(e){ error=e; } }
+        searchBtn.disabled=false; searchBtn.innerHTML='Search public listings <span aria-hidden="true">→</span>';
+        if(!elements){ showError('The public map service is busy or unreachable right now. Try again in a moment, or choose a smaller search radius.'); $('footLeft').textContent='Search could not be completed'; return; }
+        const seen=new Set(); const key=filterInput.value.trim().toLowerCase();
+        currentResults=elements.map(e=>toLead(e,city)).filter(l=>{ if(seen.has(l.id))return false; seen.add(l.id); return !key||(l.name+' '+l.category).toLowerCase().includes(key); }).sort((a,b)=>a.name.localeCompare(b.name));
+        render(); $('footLeft').textContent=currentResults.length?`${currentResults.length} public listing${currentResults.length===1?'':'s'} · ${city} · ${Math.round(radius/1000)} km radius`:`No matching mapped businesses found around ${city}`;
+      }
+      function setTabs(){ $('tabResults').classList.toggle('active',activeTab==='results'); $('tabSaved').classList.toggle('active',activeTab==='saved'); $('tabResults').setAttribute('aria-selected',String(activeTab==='results')); $('tabSaved').setAttribute('aria-selected',String(activeTab==='saved')); }
+      function showError(message){ listArea.innerHTML='<div class="error-box"><div class="empty-icon" aria-hidden="true">!</div><h3>Search didn’t finish</h3><p>'+clean(message)+'</p><button class="secondary-btn" style="margin-top:16px" onclick="document.getElementById(\'searchBtn\').click()">Try again</button></div>'; }
+      function render(){
+        updateCounts(); setTabs(); const isSaved=activeTab==='saved'; const source=isSaved?savedLeads:currentResults; const query=filterInput.value.trim().toLowerCase();
+        const rows=source.filter(item=>!query||(item.name+' '+item.category+' '+item.city+' '+item.address).toLowerCase().includes(query));
+        if(!rows.length){ listArea.innerHTML=isSaved?'<div class="empty"><div class="empty-icon" aria-hidden="true">☆</div><h3>No saved leads yet</h3><p>Run a search and save promising public business listings here. You can add notes and track your follow-up status.</p></div>':'<div class="empty"><div class="empty-icon" aria-hidden="true">⌕</div><h3>No listings to show</h3><p>Try a different city, category, or radius. Map coverage varies, and not every business has a public listing.</p></div>'; return; }
+        listArea.innerHTML=rows.map(l=>renderCard(l,isSaved)).join('');
+      }
+      function renderCard(l,isSaved){
+        const saved=savedLeads.find(x=>x.id===l.id); const phone=l.phone?`<a href="tel:${encodeURIComponent(l.phone)}">☎ ${clean(l.phone)}</a>`:'<span class="missing">Phone not listed</span>';
+        const email=l.email?`<a href="mailto:${encodeURIComponent(l.email)}">✉ ${clean(l.email)}</a>`:''; const website=safeUrl(l.website)?`<a href="${clean(safeUrl(l.website))}" target="_blank" rel="noopener noreferrer">↗ Website</a>`:'';
+        const leadBody=`<div class="lead-main"><div class="lead-name-row"><h3 class="lead-name">${clean(l.name)}</h3><span class="category-chip">${clean(l.category)}</span></div><div class="lead-meta"><span>⌖ ${clean(l.address)}</span><span>Cameroon</span></div><div class="lead-contact">${phone}${email}${website}</div>${l.lat&&l.lon?`<div class="lead-meta"><a class="map-link" href="https://www.openstreetmap.org/${clean(l.id)}" target="_blank" rel="noopener noreferrer">View source map record ↗</a></div>`:''}</div>`;
+        if(isSaved){return `<article class="lead-card" data-id="${clean(l.id)}">${leadBody}<div class="lead-actions"><button class="remove-btn" data-action="remove" data-id="${clean(l.id)}">Remove</button><div class="saved-edit"><select aria-label="Lead status" data-action="status" data-id="${clean(l.id)}"><option ${l.status==='New'?'selected':''}>New</option><option ${l.status==='Contacted'?'selected':''}>Contacted</option><option ${l.status==='Follow up'?'selected':''}>Follow up</option><option ${l.status==='Converted'?'selected':''}>Converted</option><option ${l.status==='Not a fit'?'selected':''}>Not a fit</option></select><input aria-label="Lead notes" data-action="notes" data-id="${clean(l.id)}" value="${clean(l.notes||'')}" placeholder="Add a note…"></div></div></article>`;}
+        return `<article class="lead-card">${leadBody}<div class="lead-actions"><button class="save-btn ${saved?'saved':''}" data-action="save" data-id="${clean(l.id)}">${saved?'✓ Saved':'＋ Save lead'}</button><span class="map-link">Public OSM listing</span></div></article>`;
+      }
+      function saveLead(id){ const l=currentResults.find(x=>x.id===id); if(!l||savedLeads.some(x=>x.id===id))return; savedLeads.unshift({...l,status:'New',notes:'',savedAt:new Date().toISOString()}); persist(); render(); }
+      function exportCsv(){
+        const items=(activeTab==='saved'?savedLeads:currentResults).filter(l=>{const q=filterInput.value.trim().toLowerCase();return !q||(l.name+' '+l.category+' '+l.city+' '+l.address).toLowerCase().includes(q);});
+        if(!items.length){alert('There are no leads in this view to export.');return;}
+        const columns=['Business name','Category','Address','City','Phone','Email','Website','Status','Notes','OpenStreetMap source'];
+        const esc=v=>'"'+String(v??'').replaceAll('"','""')+'"';
+        const rows=items.map(l=>[l.name,l.category,l.address,l.city,l.phone,l.email,l.website,l.status||'',l.notes||'',l.source]);
+        const csv='\ufeff'+[columns,...rows].map(row=>row.map(esc).join(',')).join('\r\n'); const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`leadlink-cameroon-${activeTab}-${new Date().toISOString().slice(0,10)}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      }
+      $('searchBtn').addEventListener('click',search);
+      $('tabResults').addEventListener('click',()=>{activeTab='results';render();});
+      $('tabSaved').addEventListener('click',()=>{activeTab='saved';render();});
+      $('exportBtn').addEventListener('click',exportCsv);
+      filterInput.addEventListener('input',render);
+      $('keywordInput').addEventListener('keydown',e=>{if(e.key==='Enter')search();});
+      listArea.addEventListener('click',e=>{const b=e.target.closest('[data-action]'); if(!b)return; const id=b.dataset.id; if(b.dataset.action==='save')saveLead(id); if(b.dataset.action==='remove'){savedLeads=savedLeads.filter(l=>l.id!==id);persist();render();}});
+      listArea.addEventListener('change',e=>{const el=e.target; const action=el.dataset.action;if(!action||!el.dataset.id)return;const l=savedLeads.find(x=>x.id===el.dataset.id);if(!l)return;if(action==='status'){l.status=el.value;persist();}if(action==='notes'){l.notes=el.value;persist();}});
+      listArea.addEventListener('keydown',e=>{if(e.target.dataset.action==='notes'&&e.key==='Enter'){e.preventDefault();e.target.blur();}});
+    })();
+  </script>
+</body>
+</html>
